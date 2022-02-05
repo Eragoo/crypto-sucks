@@ -1,0 +1,14 @@
+version: "3.7"
+services:
+  db-core:
+    image: postgres:13
+    container_name: coinsucks-db-core
+    restart: always
+    volumes:
+      - /Users/yevhenii/Documents/volume/coinsucks-postgres:/backup
+    environment:
+      - POSTGRES_USER=core
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_DB=core
+    ports:
+      - 5432:5432
