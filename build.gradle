@@ -12,6 +12,10 @@ group = 'com.coin-sucks'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
 
+bootJar {
+    archiveName = "core.jar"
+}
+
 repositories {
     mavenCentral()
     maven { url 'https://repo.spring.io/milestone' }
