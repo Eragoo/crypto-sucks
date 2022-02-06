@@ -1,4 +1,4 @@
-package com.coinsucks.core.auth;
+package com.coinsucks.core.auth.github;
 
 import com.coinsucks.core.security.TokenProvider;
 import com.coinsucks.core.user.UserService;
@@ -12,8 +12,8 @@ import org.springframework.web.client.RestOperations;
 
 import java.util.Map;
 
-import static com.coinsucks.core.auth.GithubRequestEntityHelper.getAccessTokenHttpEntity;
-import static com.coinsucks.core.auth.GithubRequestEntityHelper.getGithubUserDataHttpEntity;
+import static com.coinsucks.core.auth.github.GithubRequestEntityHelper.getAccessTokenHttpEntity;
+import static com.coinsucks.core.auth.github.GithubRequestEntityHelper.getGithubUserDataHttpEntity;
 
 @Service
 @AllArgsConstructor
@@ -37,7 +37,6 @@ public class GithubAuthService {
                 + "&response_type=" + responseType;
     }
 
-    @Transactional
     public String getToken(String accessCode) {
         String accessToken = getAccessToken(accessCode);
         GithubUserData githubUserData = getGithubUserData(accessToken);

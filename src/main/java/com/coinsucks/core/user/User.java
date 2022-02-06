@@ -20,7 +20,7 @@ public class User {
     private Long id;
     private String email;
     @Enumerated(EnumType.STRING)
-    private UserAuthType userAuthType = UserAuthType.GITHUB;
+    private UserAuthType userAuthType;
     private String password;
     private String username;
 
@@ -28,5 +28,6 @@ public class User {
         this.email = email;
         this.username = username;
         this.password = password;
+        this.userAuthType = userAuthType;
     }
 }

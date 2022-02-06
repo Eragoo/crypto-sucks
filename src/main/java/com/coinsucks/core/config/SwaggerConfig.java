@@ -47,7 +47,6 @@ public class SwaggerConfig {
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("com.coinsucks"))
                 .build();
-
     }
 
     private Type pageableMixin() {

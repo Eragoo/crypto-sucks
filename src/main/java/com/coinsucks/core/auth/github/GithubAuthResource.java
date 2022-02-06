@@ -1,4 +1,4 @@
-package com.coinsucks.core.auth;
+package com.coinsucks.core.auth.github;
 
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;

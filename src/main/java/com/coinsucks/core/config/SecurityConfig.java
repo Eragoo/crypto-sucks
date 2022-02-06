@@ -33,10 +33,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/webjars/**")
                 .antMatchers("/swagger-resources/**")
                 .antMatchers("/v2/api-docs")
-                .antMatchers("/auth/username-password/token")
+                .antMatchers("/auth/basic/token")
                 .antMatchers("/auth/oauth/github/token")
                 .antMatchers("/auth/oauth/github/oauth-url")
-                .antMatchers("/user/create")
+                .antMatchers(HttpMethod.POST, "/users")
                 .antMatchers("/");
     }
 
