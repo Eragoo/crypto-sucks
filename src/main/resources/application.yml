@@ -14,7 +14,7 @@ spring:
     open-in-view: false
     database-platform: org.hibernate.dialect.PostgreSQL94Dialect
     hibernate:
-      ddl-auto: validate
+      ddl-auto: update
     properties:
       hibernate:
         jdbc:
@@ -23,3 +23,11 @@ spring:
     show-sql: false
 #  flyway:
 #    out-of-order: true
+
+application:
+  security:
+    signature: ${SIGNATURE:key}
+    lifetime: 7d
+    github:
+      secret: ${GITHUB_SECRET:d3e30a0d4e1e21f748867b98a81b9408e931f32c}
+      client-id: ${CLIENT_ID:a8c13358da0525d4da5b}

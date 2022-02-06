@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpHeaders;
 //import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import springfox.documentation.builders.AlternateTypeBuilder;
 import springfox.documentation.builders.AlternateTypePropertyBuilder;
 import springfox.documentation.builders.PathSelectors;
@@ -22,7 +23,6 @@ import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.List;
 
-import static springfox.documentation.builders.RequestHandlerSelectors.basePackage;
 import static springfox.documentation.schema.AlternateTypeRules.newRule;
 import static springfox.documentation.spi.DocumentationType.SWAGGER_2;
 
@@ -41,9 +41,9 @@ public class SwaggerConfig {
                 .alternateTypeRules(newRule(typeResolver.resolve(Pageable.class), pageableMixin()))
                 .alternateTypeRules(newRule(typeResolver.resolve(Sort.class),
                         typeResolver.resolve(List.class, String.class)))
-//                .ignoredParameterTypes(AuthenticationPrincipal.class)
-//                .securitySchemes(List.of(new ApiKey("Authorization token", HttpHeaders.AUTHORIZATION, "header")))
-//                .securityContexts(List.of(securityContext()))
+                .ignoredParameterTypes(AuthenticationPrincipal.class)
+                .securitySchemes(List.of(new ApiKey("Authorization token", HttpHeaders.AUTHORIZATION, "header")))
+                .securityContexts(List.of(securityContext()))
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("com.coinsucks"))
                 .build();
