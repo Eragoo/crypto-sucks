@@ -37,6 +37,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/auth/oauth/github/token")
                 .antMatchers("/auth/oauth/github/oauth-url")
                 .antMatchers(HttpMethod.POST, "/users")
+                .antMatchers(HttpMethod.OPTIONS, "/users")
                 .antMatchers("/");
     }
 
