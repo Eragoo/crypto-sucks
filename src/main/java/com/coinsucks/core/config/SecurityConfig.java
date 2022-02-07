@@ -29,6 +29,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(WebSecurity web) {
         web.ignoring()
+                .antMatchers(HttpMethod.OPTIONS, "/**")
                 .antMatchers("/swagger-ui.html")
                 .antMatchers("/webjars/**")
                 .antMatchers("/swagger-resources/**")
@@ -37,7 +38,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/auth/oauth/github/token")
                 .antMatchers("/auth/oauth/github/oauth-url")
                 .antMatchers(HttpMethod.POST, "/users")
-                .antMatchers(HttpMethod.OPTIONS, "/users")
                 .antMatchers("/");
     }
 
