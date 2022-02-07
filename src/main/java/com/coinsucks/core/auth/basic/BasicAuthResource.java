@@ -2,6 +2,7 @@ package com.coinsucks.core.auth.basic;
 
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -13,7 +14,7 @@ public class BasicAuthResource {
 
 
     @PostMapping("/token")
-    public String getJwtTokenByUsernamePassword(UserAuthInputDto command) {
+    public String getJwtTokenByUsernamePassword(@RequestBody UserAuthInputDto command) {
         return service.getToken(command);
     }
 }
