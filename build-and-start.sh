@@ -1,4 +1,4 @@
 #!/bin/sh
-docker-compose down
-docker-compose build
-docker-compose up -d
+git pull
+docker-compose build app-core
+docker-compose up -d app-core
