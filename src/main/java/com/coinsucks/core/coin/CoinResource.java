@@ -2,6 +2,7 @@ package com.coinsucks.core.coin;
 
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -19,6 +20,8 @@ public class CoinResource {
             4L, new CoinOutputDto(4L, "NEAR", "Near", "https://assets.coingecko.com/coins/images/10365/small/near_icon.png?1601359077", "14")
     );
 
+    private final CoinSyncService syncService;
+
     @GetMapping
     public Collection<CoinOutputDto> getAll() {
         return db.values();
@@ -27,5 +30,10 @@ public class CoinResource {
     @GetMapping("/{id}")
     public CoinOutputDto getById(Long id) {
         return db.get(id);
+    }
+
+    @PostMapping("/sync")
+    public void sync() {
+        syncService.syncCoins();
     }
 }
