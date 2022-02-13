@@ -14,15 +14,15 @@ spring:
     open-in-view: false
     database-platform: org.hibernate.dialect.PostgreSQL94Dialect
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
     properties:
       hibernate:
         jdbc:
           lob:
             non_contextual_creation: true
     show-sql: false
-#  flyway:
-#    out-of-order: true
+  flyway:
+    out-of-order: false
 
 application:
   security:

@@ -1,35 +1,28 @@
 package com.coinsucks.core.coin;
 
+import com.coinsucks.core.coin.dto.CoinOutputDto;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Collection;
-import java.util.Map;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.SortDefault;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/coins")
 @AllArgsConstructor
 public class CoinResource {
-    private final Map<Long, CoinOutputDto> db = Map.of(
-            1L, new CoinOutputDto(1L, "BTC", "Bitcoin", "https://assets.coingecko.com/coins/images/1/small/bitcoin.png?1547033579", "42000"),
-            2L, new CoinOutputDto(2L, "ETH", "Etherium", "https://assets.coingecko.com/coins/images/279/small/ethereum.png?1595348880", "3000"),
-            3L, new CoinOutputDto(3L, "USDT", "Tether", "https://assets.coingecko.com/coins/images/325/small/Tether-logo.png?1598003707", "1"),
-            4L, new CoinOutputDto(4L, "NEAR", "Near", "https://assets.coingecko.com/coins/images/10365/small/near_icon.png?1601359077", "14")
-    );
-
     private final CoinSyncService syncService;
+    private final CoinCrudService coinCrudService;
 
     @GetMapping
-    public Collection<CoinOutputDto> getAll() {
-        return db.values();
+    public Page<CoinOutputDto> getAll(@SortDefault(value = "marketCapRank") Pageable pageable) {
+        return coinCrudService.getAll(pageable);
     }
 
     @GetMapping("/{id}")
-    public CoinOutputDto getById(Long id) {
-        return db.get(id);
+    public CoinOutputDto getById(@PathVariable Long id) {
+        return coinCrudService.getById(id);
     }
 
     @PostMapping("/sync")

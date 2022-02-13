@@ -16,7 +16,7 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = GENERATOR)
-    @SequenceGenerator(name = GENERATOR, sequenceName = "coin_sequence")
+    @SequenceGenerator(name = GENERATOR, sequenceName = "user_sequence")
     private Long id;
     private String email;
     @Enumerated(EnumType.STRING)
