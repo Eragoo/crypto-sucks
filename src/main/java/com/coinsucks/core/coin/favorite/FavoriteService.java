@@ -35,7 +35,7 @@ public class FavoriteService {
 
         return favoriteRepository.findAll(specification, pageRequest)
                 .map(Favorite::getCoin)
-                .map(CoinOutputDto::new);
+                .map(c -> new CoinOutputDto(c, user));
     }
 
     @Transactional

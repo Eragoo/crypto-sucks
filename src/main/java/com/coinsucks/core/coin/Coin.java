@@ -2,6 +2,7 @@ package com.coinsucks.core.coin;
 
 import com.coinsucks.core.coin.coingecko.GeckoCoin;
 import com.coinsucks.core.coin.favorite.Favorite;
+import com.coinsucks.core.security.AuthenticatedUser;
 import com.coinsucks.core.user.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -93,6 +94,10 @@ public class Coin {
 
         favorites.add(favorite);
         return Optional.of(favorite);
+    }
+
+    public boolean isFavorite(AuthenticatedUser user) {
+        return favorites.stream().anyMatch(f -> f.getUser().getUsername().equals(user.getUsername()));
     }
 
     @Override

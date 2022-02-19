@@ -1,6 +1,7 @@
 package com.coinsucks.core.coin.dto;
 
 import com.coinsucks.core.coin.Coin;
+import com.coinsucks.core.security.AuthenticatedUser;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -27,8 +28,9 @@ public class CoinOutputDto {
     private final Double marketCapChangePercentage24h;
     private final Long circulatingSupply;
     private final Long totalSupply;
+    private final boolean favorite;
 
-    public CoinOutputDto(Coin coin) {
+    public CoinOutputDto(Coin coin, AuthenticatedUser user) {
         this.id = coin.getId();
         this.symbol = coin.getSymbol();
         this.maxSupply = coin.getMaxSupply();
@@ -47,5 +49,6 @@ public class CoinOutputDto {
         this.marketCapChangePercentage24h = coin.getMarketCapChangePercentage24h();
         this.circulatingSupply = coin.getCirculatingSupply();
         this.totalSupply = coin.getTotalSupply();
+        this.favorite = coin.isFavorite(user);
     }
 }

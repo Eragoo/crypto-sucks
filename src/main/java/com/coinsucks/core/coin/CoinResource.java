@@ -19,8 +19,11 @@ public class CoinResource {
     private final CoinCrudService coinCrudService;
 
     @GetMapping
-    public Page<CoinOutputDto> getAll(@SortDefault(value = "marketCapRank") Pageable pageable) {
-        return coinCrudService.getAll(pageable);
+    public Page<CoinOutputDto> getAll(
+            @SortDefault(value = "marketCapRank") Pageable pageable,
+            @AuthenticationPrincipal AuthenticatedUser authenticatedUser
+    ) {
+        return coinCrudService.getAll(pageable, authenticatedUser);
     }
 
     @GetMapping("/favorites")
@@ -48,8 +51,11 @@ public class CoinResource {
     }
 
     @GetMapping("/{id}")
-    public CoinOutputDto getById(@PathVariable Long id) {
-        return coinCrudService.getById(id);
+    public CoinOutputDto getById(
+            @PathVariable Long id,
+            @AuthenticationPrincipal AuthenticatedUser authenticatedUser
+    ) {
+        return coinCrudService.getById(id, authenticatedUser);
     }
 
     @PostMapping("/sync")
