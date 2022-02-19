@@ -8,6 +8,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 @Getter
@@ -19,7 +21,7 @@ public class GeckoCoin {
     private String symbol;
     private String name;
     private String image;
-    private Double currentPrice;
+    private BigDecimal currentPrice;
     private String marketCap;
     private Integer marketCapRank;
     private Long fullyDilutedValuation;

@@ -1,11 +1,19 @@
 package com.coinsucks.core.coin;
 
 import com.coinsucks.core.coin.coingecko.GeckoCoin;
+import com.coinsucks.core.coin.favorite.Favorite;
+import com.coinsucks.core.user.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -23,7 +31,7 @@ public class Coin {
     private String name;
     private String coinGeckoId;
     private Long maxSupply;
-    private Double currentPrice;
+    private BigDecimal currentPrice;
     private String marketCap;
     private Integer marketCapRank;
     private Long fullyDilutedValuation;
@@ -36,6 +44,9 @@ public class Coin {
     private Double marketCapChangePercentage24h;
     private Long circulatingSupply;
     private Long totalSupply;
+
+    @OneToMany(mappedBy = "coin")
+    private Set<Favorite> favorites = new HashSet<>();
 
     public void updatePriceInfo(GeckoCoin geckoCoin) {
         this.currentPrice = geckoCoin.getCurrentPrice();
@@ -72,5 +83,30 @@ public class Coin {
         this.marketCapChangePercentage24h = geckoCoin.getMarketCapChangePercentage24h();
         this.circulatingSupply = geckoCoin.getCirculatingSupply();
         this.totalSupply = geckoCoin.getTotalSupply();
+    }
+
+    public Optional<Favorite> addToFavorite(User user) {
+        Favorite favorite = new Favorite(this, user);
+        if (favorites.contains(favorite)) {
+            return Optional.empty();
+        }
+
+        favorites.add(favorite);
+        return Optional.of(favorite);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Coin coin = (Coin) o;
+
+        return id != null ? id.equals(coin.id) : coin.id == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return id != null ? id.hashCode() : 0;
     }
 }

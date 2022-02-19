@@ -4,6 +4,8 @@ import com.coinsucks.core.coin.Coin;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.math.BigDecimal;
+
 @AllArgsConstructor
 @Getter
 public class CoinOutputDto {
@@ -12,7 +14,7 @@ public class CoinOutputDto {
     private final String image;
     private final String name;
     private final Long maxSupply;
-    private final Double currentPrice;
+    private final BigDecimal currentPrice;
     private final String marketCap;
     private final Integer marketCapRank;
     private final Long fullyDilutedValuation;
