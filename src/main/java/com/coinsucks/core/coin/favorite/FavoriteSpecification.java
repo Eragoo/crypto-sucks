@@ -13,7 +13,7 @@ import java.util.List;
 
 public class FavoriteSpecification {
     public static Specification<Favorite> byUsername(String username) {
-        return (r, cq, cb) -> StringUtils.isBlank(username) ? null : cb.equal(r.get("user").get("username"), username);
+        return (r, cq, cb) -> username == null ? null : cb.equal(r.get("user").get("username"), username);
     }
 
     public static Specification<Favorite> byCoinId(Long coindId) {
