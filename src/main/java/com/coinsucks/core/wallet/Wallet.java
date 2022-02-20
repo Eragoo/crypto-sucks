@@ -46,4 +46,9 @@ public class Wallet {
             return walletCoin;
         }
     }
+
+    public void remove(Coin coin) {
+        WalletCoin walletCoin = new WalletCoin(coin, this, null);
+        coins.remove(walletCoin);
+    }
 }

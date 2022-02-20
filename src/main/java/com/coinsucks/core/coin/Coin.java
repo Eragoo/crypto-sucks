@@ -86,6 +86,8 @@ public class Coin {
         this.totalSupply = geckoCoin.getTotalSupply();
     }
 
+
+
     public Optional<Favorite> addToFavorite(User user) {
         Favorite favorite = new Favorite(this, user);
         if (favorites.contains(favorite)) {

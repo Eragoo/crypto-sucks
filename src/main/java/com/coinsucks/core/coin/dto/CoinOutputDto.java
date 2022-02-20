@@ -14,6 +14,7 @@ public class CoinOutputDto {
     private final String symbol;
     private final String image;
     private final String name;
+    private String coinGeckoId;
     private final Long maxSupply;
     private final BigDecimal currentPrice;
     private final String marketCap;
@@ -50,5 +51,6 @@ public class CoinOutputDto {
         this.circulatingSupply = coin.getCirculatingSupply();
         this.totalSupply = coin.getTotalSupply();
         this.favorite = coin.isFavorite(user);
+        this.coinGeckoId = coin.getCoinGeckoId();
     }
 }

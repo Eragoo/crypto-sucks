@@ -16,6 +16,16 @@ public class TestDataProvider {
         return coin;
     }
 
+    public static Coin getCoin(Long id, BigDecimal currentPrice) {
+        Coin coin = new Coin();
+        coin.setId(id);
+        coin.setCurrentPrice(currentPrice);
+        coin.setName("COIN");
+
+        return coin;
+    }
+
+
     public static User getUser() {
         return new User("email", "username", "pass", UserAuthType.BASIC);
     }
