@@ -6,8 +6,8 @@ import com.coinsucks.core.user.User;
 import com.coinsucks.core.wallet.dto.input.BuyCoinInputDto;
 import com.coinsucks.core.wallet.dto.input.SwapCoinInputDto;
 import com.coinsucks.core.wallet.dto.input.WithdrawCoinInputDto;
+import com.coinsucks.core.wallet.dto.CoinWalletStateDto;
 import com.coinsucks.core.wallet.transaction.Transaction;
-import com.coinsucks.core.wallet.transaction.TransactionType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,8 +17,6 @@ import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
-
-import static com.coinsucks.core.wallet.transaction.TransactionType.BUY;
 
 @Getter
 @Setter

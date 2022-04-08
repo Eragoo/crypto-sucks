@@ -6,6 +6,7 @@ import com.coinsucks.core.error.exception.ConflictException;
 import com.coinsucks.core.wallet.dto.input.BuyCoinInputDto;
 import com.coinsucks.core.wallet.dto.input.SwapCoinInputDto;
 import com.coinsucks.core.wallet.dto.input.WithdrawCoinInputDto;
+import com.coinsucks.core.wallet.dto.CoinWalletStateDto;
 import com.coinsucks.core.wallet.transaction.Transaction;
 import com.coinsucks.core.wallet.transaction.TransactionType;
 import org.junit.jupiter.api.Assertions;

@@ -1,4 +1,4 @@
-package com.coinsucks.core.wallet;
+package com.coinsucks.core.wallet.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
