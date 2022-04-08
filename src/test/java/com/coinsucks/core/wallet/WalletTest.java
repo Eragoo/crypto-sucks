@@ -1,6 +1,7 @@
 package com.coinsucks.core.wallet;
 
 import com.coinsucks.core.coin.Coin;
+import com.coinsucks.core.wallet.transaction.Transaction;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -20,7 +21,7 @@ class WalletTest {
 
         wallet.add(coin, BigDecimal.ONE);
 
-        Set<WalletCoin> coins = wallet.getCoins();
+        Set<Transaction> coins = wallet.getCoins();
         Assertions.assertAll(
                 () -> Assertions.assertEquals(1, coins.size()),
                 () -> Assertions.assertEquals(BigDecimal.ONE, wallet.getCoins().stream().findFirst().get().getAmount())
@@ -37,7 +38,7 @@ class WalletTest {
         wallet.add(coin, BigDecimal.ONE);
         wallet.add(coin, BigDecimal.ONE);
 
-        Set<WalletCoin> coins = wallet.getCoins();
+        Set<Transaction> coins = wallet.getCoins();
         Assertions.assertAll(
                 () -> Assertions.assertEquals(1, coins.size()),
                 () -> Assertions.assertEquals(BigDecimal.valueOf(2), wallet.getCoins().stream().findFirst().get().getAmount())
@@ -54,7 +55,7 @@ class WalletTest {
         wallet.add(coin, BigDecimal.ONE);
         wallet.remove(coin);
 
-        Set<WalletCoin> coins = wallet.getCoins();
+        Set<Transaction> coins = wallet.getCoins();
         Assertions.assertAll(
                 () -> Assertions.assertEquals(0, coins.size())
         );
@@ -69,7 +70,7 @@ class WalletTest {
 
         wallet.remove(coin);
 
-        Set<WalletCoin> coins = wallet.getCoins();
+        Set<Transaction> coins = wallet.getCoins();
         Assertions.assertAll(
                 () -> Assertions.assertEquals(0, coins.size())
         );
