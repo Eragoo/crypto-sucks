@@ -14,8 +14,8 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @Getter
 public class SwapCoinInputDto {
-    private Coin fromCoinId;
-    private Coin toCoinId;
+    private Long fromCoinId;
+    private Long toCoinId;
     private BigDecimal fromAmount;
     private BigDecimal toAmount;
     private BigDecimal usdAmount;

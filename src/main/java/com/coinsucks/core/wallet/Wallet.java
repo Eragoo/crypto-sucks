@@ -8,6 +8,7 @@ import com.coinsucks.core.wallet.dto.input.SwapCoinInputDto;
 import com.coinsucks.core.wallet.dto.input.WithdrawCoinInputDto;
 import com.coinsucks.core.wallet.transaction.Transaction;
 import com.coinsucks.core.wallet.transaction.TransactionType;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -15,6 +16,7 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.coinsucks.core.wallet.transaction.TransactionType.BUY;
 
@@ -22,6 +24,7 @@ import static com.coinsucks.core.wallet.transaction.TransactionType.BUY;
 @Setter
 @Entity
 @NoArgsConstructor
+@AllArgsConstructor
 public class Wallet {
     private static final String GENERATOR = "wallet_generator";
 
@@ -65,7 +68,9 @@ public class Wallet {
     }
 
     public Transaction withdrawCoin(WithdrawCoinInputDto withdrawDto, Coin coin) {
-        //todo add validation to check is wallet have required coin in needed amount
+
+
+
         Transaction transaction = Transaction.constructWithdraw(
                 coin,
                 withdrawDto.getAmount(),
@@ -87,28 +92,52 @@ public class Wallet {
                 case BUY: {
                     Long coinId = transaction.getTo().getId();
                     BigDecimal toAmount = transaction.getToAmount();
-                    CoinWalletStateDto stateDto = Optional.ofNullable(coinIdToState.get(coinId))
-                            .orElse(new CoinWalletStateDto(coinId, BigDecimal.ZERO));
-
-                    stateDto.addValue(toAmount);
-                    coinIdToState.put(coinId, stateDto);
+                    buy(coinIdToState, coinId, toAmount);
                     break;
                 }
 
                 case WITHDRAW: {
                     Long withdrawCoinId = transaction.getFrom().getId();
                     BigDecimal withdrawAmount = transaction.getFromAmount();
-                    CoinWalletStateDto stateDto = Optional.ofNullable(coinIdToState.get(withdrawCoinId))
-                            .orElse(new CoinWalletStateDto(withdrawCoinId, BigDecimal.ZERO));
+                    withdraw(coinIdToState, withdrawCoinId, withdrawAmount);
+                    break;
+                }
 
-                    stateDto.addValue(toAmount);
-                    coinIdToState.put(coinId, stateDto);
+                case SWAP: {
+                    //swap consist of 2 operations: withdraw & buy
+                    Long fromCoin = transaction.getFrom().getId();
+                    BigDecimal fromAmount = transaction.getFromAmount();
+                    withdraw(coinIdToState, fromCoin, fromAmount);
+
+                    Long toCoin = transaction.getTo().getId();
+                    BigDecimal toAmount = transaction.getToAmount();
+                    buy(coinIdToState, toCoin, toAmount);
                     break;
                 }
             }
-
-
         }
+
+        return coinIdToState.values()
+                .stream()
+                .filter(c -> !c.getAmount().equals(BigDecimal.ZERO))
+                .collect(Collectors.toSet());
+    }
+
+    private void withdraw(Map<Long, CoinWalletStateDto> coinIdToState, Long withdrawCoinId, BigDecimal withdrawAmount) {
+        //todo add check is enough money
+        CoinWalletStateDto stateDto = Optional.ofNullable(coinIdToState.get(withdrawCoinId))
+                .orElse(new CoinWalletStateDto(withdrawCoinId, BigDecimal.ZERO));
+
+        stateDto.subtractValue(withdrawAmount);
+        coinIdToState.put(withdrawCoinId, stateDto);
+    }
+
+    private void buy(Map<Long, CoinWalletStateDto> coinIdToState, Long coinId, BigDecimal toAmount) {
+        CoinWalletStateDto stateDto = Optional.ofNullable(coinIdToState.get(coinId))
+                .orElse(new CoinWalletStateDto(coinId, BigDecimal.ZERO));
+
+        stateDto.addValue(toAmount);
+        coinIdToState.put(coinId, stateDto);
     }
 
     @Override

@@ -14,6 +14,10 @@ public class CoinWalletStateDto {
     public void addValue(BigDecimal value) {
         amount = amount.add(value);
     }
+    public void subtractValue(BigDecimal value) {
+        amount = amount.subtract(value);
+    }
+
 
     @Override
     public boolean equals(Object o) {
