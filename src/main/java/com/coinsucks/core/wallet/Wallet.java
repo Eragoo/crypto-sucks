@@ -126,6 +126,7 @@ public class Wallet {
                 .sorted(Comparator.comparing(c -> c.getCoin().getMarketCapRank()));
     }
 
+    //todo test cover
     public BigDecimal getCurrentPrice() {
         return getCurrentState()
                 .map(c -> c.getCoin().getCurrentPrice().multiply(c.getAmount()))
@@ -133,6 +134,7 @@ public class Wallet {
                 .orElse(BigDecimal.ZERO);
     }
 
+    //todo test cover
     public BigDecimal getStartPrice() {
         Map<Long, BigDecimal> coinIdToUsdAmount = new HashMap<>();
 
