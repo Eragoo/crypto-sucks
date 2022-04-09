@@ -37,6 +37,7 @@ public class WalletResource {
     ) {
         return walletService.getById(id, user);
     }
+    //todo add transactions get by wallet
 
     @GetMapping
     public List<WalletOutputDto> getAll(@AuthenticationPrincipal AuthenticatedUser user) {
