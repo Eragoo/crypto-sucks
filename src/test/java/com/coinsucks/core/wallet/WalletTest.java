@@ -6,7 +6,7 @@ import com.coinsucks.core.error.exception.ConflictException;
 import com.coinsucks.core.wallet.dto.input.BuyCoinInputDto;
 import com.coinsucks.core.wallet.dto.input.SwapCoinInputDto;
 import com.coinsucks.core.wallet.dto.input.WithdrawCoinInputDto;
-import com.coinsucks.core.wallet.dto.CoinWalletStateDto;
+import com.coinsucks.core.wallet.dto.CoinWalletState;
 import com.coinsucks.core.wallet.transaction.Transaction;
 import com.coinsucks.core.wallet.transaction.TransactionType;
 import org.junit.jupiter.api.Assertions;
@@ -16,6 +16,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 class WalletTest {
 
@@ -112,11 +113,11 @@ class WalletTest {
         );
         wallet.swapCoin(swapDto, coin2, coin1);
 
-        Set<CoinWalletStateDto> currentState = wallet.getCurrentState();
+        Set<CoinWalletState> currentState = wallet.getCurrentState().collect(Collectors.toSet());
 
         Assertions.assertAll(
                 () -> Assertions.assertEquals(1, currentState.size()),
-                () -> Assertions.assertEquals(1L, new ArrayList<>(currentState).get(0).getCoinId()),
+                () -> Assertions.assertEquals(1L, new ArrayList<>(currentState).get(0).getCoin().getId()),
                 () -> Assertions.assertEquals(BigDecimal.ONE, new ArrayList<>(currentState).get(0).getAmount())
         );
     }

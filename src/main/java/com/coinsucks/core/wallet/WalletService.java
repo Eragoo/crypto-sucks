@@ -4,10 +4,15 @@ import com.coinsucks.core.coin.Coin;
 import com.coinsucks.core.coin.CoinRepository;
 import com.coinsucks.core.error.exception.NotFoundException;
 import com.coinsucks.core.security.AuthenticatedUser;
+import com.coinsucks.core.user.User;
+import com.coinsucks.core.user.UserRepository;
+import com.coinsucks.core.user.UserService;
 import com.coinsucks.core.wallet.dto.input.BuyCoinInputDto;
 import com.coinsucks.core.wallet.dto.input.SwapCoinInputDto;
+import com.coinsucks.core.wallet.dto.input.WalletInputDto;
 import com.coinsucks.core.wallet.dto.input.WithdrawCoinInputDto;
 import com.coinsucks.core.wallet.dto.output.CoinWalletStateOutputDto;
+import com.coinsucks.core.wallet.dto.output.WalletOutputDto;
 import com.coinsucks.core.wallet.transaction.Transaction;
 import com.coinsucks.core.wallet.transaction.TransactionOutputDto;
 import com.coinsucks.core.wallet.transaction.TransactionRepository;
@@ -25,6 +30,7 @@ public class WalletService {
     private final WalletRepository walletRepository;
     private final TransactionRepository transactionRepository;
     private final CoinRepository coinRepository;
+    private final UserRepository userRepository;
 
     @Transactional
     public TransactionOutputDto buy(BuyCoinInputDto buyCoinInputDto, Long walletId, AuthenticatedUser user) {
@@ -76,13 +82,38 @@ public class WalletService {
         Wallet wallet = walletRepository.findById(walletId)
                 .orElseThrow(() -> new NotFoundException("Wallet not found on withdraw operation :("));
 
-        return wallet.getCurrentState().stream()
-                .map(c -> {
-                    Coin coin = coinRepository.findById(c.getCoinId())
-                            .orElseThrow(() -> new NotFoundException("Coin not found on state operation :("));
-                    return new CoinWalletStateOutputDto(coin, c.getAmount(), user);
-                })
-                .sorted(Comparator.comparing(c -> c.getCoin().getMarketCapRank()))
+        return wallet.getCurrentStateSorted()
+                .map(c -> new CoinWalletStateOutputDto(c.getCoin(), c.getAmount(), user))
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public WalletOutputDto create(WalletInputDto inputDto, AuthenticatedUser user) {
+        User dbUser = userRepository.findByUsername(user.getUsername())
+                .orElseThrow(() -> new NotFoundException(
+                        "User with usename :" + user.getUsername() + " not found on wallet create :("
+                ));
+
+        Wallet wallet = new Wallet(
+                inputDto.getName(),
+                dbUser
+        );
+        walletRepository.save(wallet);
+
+        return new WalletOutputDto(wallet, user);
+    }
+
+    @Transactional(readOnly = true)
+    public WalletOutputDto getById(Long id, AuthenticatedUser user) {
+        Wallet wallet = walletRepository.findByOwnerUsernameAndId(user.getUsername(), id)
+                .orElseThrow(() -> new NotFoundException("Wallet not found for this user :("));
+        return new WalletOutputDto(wallet, user);
+    }
+
+    @Transactional(readOnly = true)
+    public List<WalletOutputDto> getAll(AuthenticatedUser user) {
+        return walletRepository.findAllByOwnerUsername(user.getUsername()).stream()
+                .map(w -> new WalletOutputDto(w, user))
                 .collect(Collectors.toList());
     }
 }

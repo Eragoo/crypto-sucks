@@ -6,7 +6,7 @@ import com.coinsucks.core.user.User;
 import com.coinsucks.core.wallet.dto.input.BuyCoinInputDto;
 import com.coinsucks.core.wallet.dto.input.SwapCoinInputDto;
 import com.coinsucks.core.wallet.dto.input.WithdrawCoinInputDto;
-import com.coinsucks.core.wallet.dto.CoinWalletStateDto;
+import com.coinsucks.core.wallet.dto.CoinWalletState;
 import com.coinsucks.core.wallet.transaction.Transaction;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,6 +17,7 @@ import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Getter
 @Setter
@@ -81,33 +82,33 @@ public class Wallet {
         return transaction;
     }
 
-    public Set<CoinWalletStateDto> getCurrentState() {
-        Map<Long, CoinWalletStateDto> coinIdToState = new HashMap<>();
+    public Stream<CoinWalletState> getCurrentState() {
+        Map<Long, CoinWalletState> coinIdToState = new HashMap<>();
 
         for (Transaction transaction : transactions) {
 
             switch (transaction.getType()) {
                 case BUY: {
-                    Long coinId = transaction.getTo().getId();
+                    Coin coin = transaction.getTo();
                     BigDecimal toAmount = transaction.getToAmount();
-                    buy(coinIdToState, coinId, toAmount);
+                    buy(coinIdToState, coin, toAmount);
                     break;
                 }
 
                 case WITHDRAW: {
-                    Long withdrawCoinId = transaction.getFrom().getId();
+                    Coin withdrawCoin = transaction.getFrom();
                     BigDecimal withdrawAmount = transaction.getFromAmount();
-                    withdraw(coinIdToState, withdrawCoinId, withdrawAmount);
+                    withdraw(coinIdToState, withdrawCoin, withdrawAmount);
                     break;
                 }
 
                 case SWAP: {
                     //swap consist of 2 operations: withdraw & buy
-                    Long fromCoin = transaction.getFrom().getId();
+                    Coin fromCoin = transaction.getFrom();
                     BigDecimal fromAmount = transaction.getFromAmount();
                     withdraw(coinIdToState, fromCoin, fromAmount);
 
-                    Long toCoin = transaction.getTo().getId();
+                    Coin toCoin = transaction.getTo();
                     BigDecimal toAmount = transaction.getToAmount();
                     buy(coinIdToState, toCoin, toAmount);
                     break;
@@ -117,25 +118,82 @@ public class Wallet {
 
         return coinIdToState.values()
                 .stream()
-                .filter(c -> !c.getAmount().equals(BigDecimal.ZERO))
-                .collect(Collectors.toSet());
+                .filter(c -> !c.getAmount().equals(BigDecimal.ZERO));
     }
 
-    private void withdraw(Map<Long, CoinWalletStateDto> coinIdToState, Long withdrawCoinId, BigDecimal withdrawAmount) {
+    public Stream<CoinWalletState> getCurrentStateSorted() {
+        return getCurrentState()
+                .sorted(Comparator.comparing(c -> c.getCoin().getMarketCapRank()));
+    }
+
+    public BigDecimal getCurrentPrice() {
+        return getCurrentState()
+                .map(c -> c.getCoin().getCurrentPrice().multiply(c.getAmount()))
+                .reduce(BigDecimal::add)
+                .orElse(BigDecimal.ZERO);
+    }
+
+    public BigDecimal getStartPrice() {
+        Map<Long, BigDecimal> coinIdToUsdAmount = new HashMap<>();
+
+        for (Transaction transaction : transactions) {
+
+            switch (transaction.getType()) {
+                case BUY: {
+                    Coin coin = transaction.getTo();
+                    BigDecimal toAmount = transaction.getToAmount();
+
+                    BigDecimal usdAmount = Optional.ofNullable(coinIdToUsdAmount.get(coin.getId()))
+                            .orElse(BigDecimal.ZERO);
+
+                    usdAmount = usdAmount.add(toAmount);
+                    coinIdToUsdAmount.put(coin.getId(), usdAmount);
+
+                    break;
+                }
+
+                case WITHDRAW: {
+                    Coin withdrawCoin = transaction.getFrom();
+                    BigDecimal withdrawAmount = transaction.getFromAmount();
+
+                    BigDecimal usdAmount = Optional.ofNullable(coinIdToUsdAmount.get(withdrawCoin.getId()))
+                            .orElse(BigDecimal.ZERO);
+
+                    usdAmount = usdAmount.subtract(withdrawAmount);
+                    coinIdToUsdAmount.put(withdrawCoin.getId(), usdAmount);
+                    break;
+                }
+            }
+        }
+
+        return coinIdToUsdAmount.values()
+                .stream()
+                .reduce(BigDecimal::add)
+                .orElse(BigDecimal.ZERO);
+    }
+
+
+    private void withdraw(Map<Long, CoinWalletState> coinIdToState, Coin withdrawCoin, BigDecimal withdrawAmount) {
         //todo add check is enough money
-        CoinWalletStateDto stateDto = Optional.ofNullable(coinIdToState.get(withdrawCoinId))
-                .orElse(new CoinWalletStateDto(withdrawCoinId, BigDecimal.ZERO));
+        CoinWalletState stateDto = Optional.ofNullable(coinIdToState.get(withdrawCoin.getId()))
+                .orElse(new CoinWalletState(withdrawCoin, BigDecimal.ZERO));
 
         stateDto.subtractValue(withdrawAmount);
-        coinIdToState.put(withdrawCoinId, stateDto);
+        coinIdToState.put(withdrawCoin.getId(), stateDto);
     }
 
-    private void buy(Map<Long, CoinWalletStateDto> coinIdToState, Long coinId, BigDecimal toAmount) {
-        CoinWalletStateDto stateDto = Optional.ofNullable(coinIdToState.get(coinId))
-                .orElse(new CoinWalletStateDto(coinId, BigDecimal.ZERO));
+    private void buy(Map<Long, CoinWalletState> coinIdToState, Coin coin, BigDecimal toAmount) {
+        CoinWalletState stateDto = Optional.ofNullable(coinIdToState.get(coin.getId()))
+                .orElse(new CoinWalletState(coin, BigDecimal.ZERO));
 
         stateDto.addValue(toAmount);
-        coinIdToState.put(coinId, stateDto);
+        coinIdToState.put(coin.getId(), stateDto);
+    }
+
+    public Wallet(String name, User owner) {
+        this.name = name;
+        this.transactions = new HashSet<>();
+        this.owner = owner;
     }
 
     @Override

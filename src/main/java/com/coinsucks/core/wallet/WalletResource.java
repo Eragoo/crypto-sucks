@@ -3,10 +3,13 @@ package com.coinsucks.core.wallet;
 import com.coinsucks.core.security.AuthenticatedUser;
 import com.coinsucks.core.wallet.dto.input.BuyCoinInputDto;
 import com.coinsucks.core.wallet.dto.input.SwapCoinInputDto;
+import com.coinsucks.core.wallet.dto.input.WalletInputDto;
 import com.coinsucks.core.wallet.dto.input.WithdrawCoinInputDto;
 import com.coinsucks.core.wallet.dto.output.CoinWalletStateOutputDto;
+import com.coinsucks.core.wallet.dto.output.WalletOutputDto;
 import com.coinsucks.core.wallet.transaction.TransactionOutputDto;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,6 +28,24 @@ public class WalletResource {
             @PathVariable Long id
     ) {
         return walletService.buy(buyCoinInputDto, id, user);
+    }
+
+    @GetMapping("/{id}")
+    public WalletOutputDto getById(
+            @AuthenticationPrincipal AuthenticatedUser user,
+            @PathVariable Long id
+    ) {
+        return walletService.getById(id, user);
+    }
+
+    @GetMapping
+    public List<WalletOutputDto> getAll(@AuthenticationPrincipal AuthenticatedUser user) {
+        return walletService.getAll(user);
+    }
+
+    @PostMapping
+    public WalletOutputDto create(WalletInputDto inputDto, @AuthenticationPrincipal AuthenticatedUser user) {
+        return walletService.create(inputDto, user);
     }
 
     @PostMapping("/{id}/withdraw")

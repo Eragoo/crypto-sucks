@@ -1,5 +1,6 @@
 package com.coinsucks.core.wallet.dto;
 
+import com.coinsucks.core.coin.Coin;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -7,8 +8,8 @@ import java.math.BigDecimal;
 
 @AllArgsConstructor
 @Getter
-public class CoinWalletStateDto {
-    private final Long coinId;
+public class CoinWalletState {
+    private final Coin coin;
     private BigDecimal amount;
 
     public void addValue(BigDecimal value) {
@@ -24,13 +25,13 @@ public class CoinWalletStateDto {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        CoinWalletStateDto that = (CoinWalletStateDto) o;
+        CoinWalletState that = (CoinWalletState) o;
 
-        return coinId.equals(that.coinId);
+        return coin.equals(that.coin);
     }
 
     @Override
     public int hashCode() {
-        return coinId.hashCode();
+        return coin.hashCode();
     }
 }
