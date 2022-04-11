@@ -47,6 +47,7 @@ dependencies {
     compileOnly "org.projectlombok:lombok"
 
     annotationProcessor "org.projectlombok:lombok"
+    annotationProcessor "org.hibernate:hibernate-jpamodelgen"
 
     runtimeOnly 'org.postgresql:postgresql'
 

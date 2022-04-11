@@ -1,6 +1,7 @@
 package com.coinsucks.core.coin.favorite;
 
 import com.coinsucks.core.coin.Coin;
+import com.coinsucks.core.coin.Coin_;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.query.criteria.internal.OrderImpl;
 import org.springframework.data.domain.Pageable;
@@ -24,10 +25,10 @@ public class FavoriteSpecification {
         return (r, cq, cb) -> {
             if (pageable != null) {
                 List<Order> orders = new ArrayList<>();
-                Path<Coin> coin = r.get("coin");
-                Predicate predicate = cb.isNotNull(coin.get("id"));
+                Path<Coin> coin = r.get(Favorite_.coin);
+                Predicate predicate = cb.isNotNull(coin.get(Coin_.id));
                 List<Expression<?>> grouping = new ArrayList<>();
-                grouping.add(r.get("id"));
+                grouping.add(r.get(Favorite_.id));
 
                 for (Sort.Order order : pageable.getSort()) {
                         orders.add(new OrderImpl(coin.get(order.getProperty()), order.isAscending()));

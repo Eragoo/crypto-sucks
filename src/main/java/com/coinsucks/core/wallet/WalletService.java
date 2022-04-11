@@ -6,21 +6,19 @@ import com.coinsucks.core.error.exception.NotFoundException;
 import com.coinsucks.core.security.AuthenticatedUser;
 import com.coinsucks.core.user.User;
 import com.coinsucks.core.user.UserRepository;
-import com.coinsucks.core.user.UserService;
 import com.coinsucks.core.wallet.dto.input.BuyCoinInputDto;
 import com.coinsucks.core.wallet.dto.input.SwapCoinInputDto;
 import com.coinsucks.core.wallet.dto.input.WalletInputDto;
 import com.coinsucks.core.wallet.dto.input.WithdrawCoinInputDto;
 import com.coinsucks.core.wallet.dto.output.CoinWalletStateOutputDto;
 import com.coinsucks.core.wallet.dto.output.WalletOutputDto;
-import com.coinsucks.core.wallet.transaction.Transaction;
-import com.coinsucks.core.wallet.transaction.TransactionOutputDto;
-import com.coinsucks.core.wallet.transaction.TransactionRepository;
+import com.coinsucks.core.wallet.transaction.*;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -112,8 +110,23 @@ public class WalletService {
 
     @Transactional(readOnly = true)
     public List<WalletOutputDto> getAll(AuthenticatedUser user) {
-        return walletRepository.findAllByOwnerUsername(user.getUsername()).stream()
+        return walletRepository.findAll(WalletSpecifications.accessibleFor(user))
+                .stream()
                 .map(w -> new WalletOutputDto(w, user))
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<TransactionOutputDto> getTransactions(Long walletId, AuthenticatedUser user) {
+        Specification<Transaction> transactionSpecification = TransactionSpecifications.accessibleFor(user)
+                .and(TransactionSpecifications.byWallet(walletId));
+
+        return transactionRepository.findAll(
+                transactionSpecification,
+                Sort.by(Sort.Order.asc(Transaction_.CREATED_AT))
+        )
+                .stream()
+                .map(t -> new TransactionOutputDto(t, user))
                 .collect(Collectors.toList());
     }
 }

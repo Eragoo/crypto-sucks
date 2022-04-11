@@ -9,6 +9,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.time.Instant;
 
 @Getter
 @Setter
@@ -34,6 +35,7 @@ public class Transaction {
     @Enumerated(EnumType.STRING)
     private TransactionType type;
     private String comment;
+    private Instant createdAt;
 
     public static Transaction constructBuy(Coin coin, BigDecimal amount, BigDecimal usdAmount, Wallet wallet, String comment) {
         return new Transaction(
@@ -45,7 +47,8 @@ public class Transaction {
                 amount,
                 usdAmount,
                 TransactionType.BUY,
-                comment
+                comment,
+                Instant.now()
         );
     }
 
@@ -59,7 +62,8 @@ public class Transaction {
                 toAmount,
                 usdAmount,
                 TransactionType.SWAP,
-                comment
+                comment,
+                Instant.now()
         );
     }
 
@@ -73,7 +77,8 @@ public class Transaction {
                 null,
                 usdAmount,
                 TransactionType.WITHDRAW,
-                comment
+                comment,
+                Instant.now()
         );
     }
 
