@@ -52,8 +52,8 @@ public class WalletResource {
     }
 
     @PostMapping
-    public WalletOutputDto create(@RequestBody WalletInputDto inputDto, @AuthenticationPrincipal AuthenticatedUser user) {
-        return walletService.create(inputDto, user);
+    public WalletOutputDto create(@RequestBody String name, @AuthenticationPrincipal AuthenticatedUser user) {
+        return walletService.create(name, user);
     }
 
     @PostMapping("/{id}/withdraw")

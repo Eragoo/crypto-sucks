@@ -8,7 +8,6 @@ import com.coinsucks.core.user.User;
 import com.coinsucks.core.user.UserRepository;
 import com.coinsucks.core.wallet.dto.input.BuyCoinInputDto;
 import com.coinsucks.core.wallet.dto.input.SwapCoinInputDto;
-import com.coinsucks.core.wallet.dto.input.WalletInputDto;
 import com.coinsucks.core.wallet.dto.input.WithdrawCoinInputDto;
 import com.coinsucks.core.wallet.dto.output.CoinWalletStateOutputDto;
 import com.coinsucks.core.wallet.dto.output.WalletOutputDto;
@@ -86,14 +85,14 @@ public class WalletService {
     }
 
     @Transactional
-    public WalletOutputDto create(WalletInputDto inputDto, AuthenticatedUser user) {
+    public WalletOutputDto create(String name, AuthenticatedUser user) {
         User dbUser = userRepository.findByUsername(user.getUsername())
                 .orElseThrow(() -> new NotFoundException(
                         "User with usename :" + user.getUsername() + " not found on wallet create :("
                 ));
 
         Wallet wallet = new Wallet(
-                inputDto.getName(),
+                name,
                 dbUser
         );
         walletRepository.save(wallet);

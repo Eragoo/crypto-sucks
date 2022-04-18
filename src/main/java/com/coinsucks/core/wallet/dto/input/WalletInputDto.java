@@ -4,9 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
-@AllArgsConstructor
 @Getter
-@Setter
+@AllArgsConstructor
 public class WalletInputDto {
-    private String name;
+    private final String name;
 }
