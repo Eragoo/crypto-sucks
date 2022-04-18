@@ -14,10 +14,10 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @Getter
 public class SwapCoinInputDto {
-    private Long fromCoinId;
-    private Long toCoinId;
-    private BigDecimal fromAmount;
-    private BigDecimal toAmount;
-    private BigDecimal usdAmount;
-    private String comment;
+    private final Long fromCoinId;
+    private final Long toCoinId;
+    private final BigDecimal fromAmount;
+    private final BigDecimal toAmount;
+    private final BigDecimal usdAmount;
+    private final String comment;
 }
