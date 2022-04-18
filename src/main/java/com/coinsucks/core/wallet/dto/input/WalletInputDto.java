@@ -8,4 +8,5 @@ import lombok.Setter;
 @AllArgsConstructor
 public class WalletInputDto {
     private final String name;
+    private final String desc;
 }
