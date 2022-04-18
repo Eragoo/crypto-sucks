@@ -52,7 +52,7 @@ public class WalletResource {
     }
 
     @PostMapping
-    public WalletOutputDto create(WalletInputDto inputDto, @AuthenticationPrincipal AuthenticatedUser user) {
+    public WalletOutputDto create(@RequestBody WalletInputDto inputDto, @AuthenticationPrincipal AuthenticatedUser user) {
         return walletService.create(inputDto, user);
     }
 
