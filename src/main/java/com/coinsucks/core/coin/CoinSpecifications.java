@@ -6,6 +6,6 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 
 public class CoinSpecifications {
     public static Specification<Coin> byName(String name) {
-        return (r, cq, cb) -> isBlank(name) ? null : cb.like(r.get(Coin_.name), "%"+name+"%");
+        return (r, cq, cb) -> isBlank(name) ? null : cb.like(cb.upper(r.get(Coin_.name)), "%"+name.toUpperCase()+"%");
     }
 }
