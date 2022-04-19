@@ -20,10 +20,11 @@ public class CoinResource {
 
     @GetMapping
     public Page<CoinOutputDto> getAll(
+            @RequestParam(required = false) String name,
             @SortDefault(value = "marketCapRank") Pageable pageable,
             @AuthenticationPrincipal AuthenticatedUser authenticatedUser
     ) {
-        return coinCrudService.getAll(pageable, authenticatedUser);
+        return coinCrudService.getAll(name, pageable, authenticatedUser);
     }
 
     @GetMapping("/favorites")
