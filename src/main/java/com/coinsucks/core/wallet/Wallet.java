@@ -143,12 +143,10 @@ public class Wallet {
             switch (transaction.getType()) {
                 case BUY: {
                     Coin coin = transaction.getTo();
-                    BigDecimal toAmount = transaction.getToAmount();
-
                     BigDecimal usdAmount = Optional.ofNullable(coinIdToUsdAmount.get(coin.getId()))
                             .orElse(BigDecimal.ZERO);
 
-                    usdAmount = usdAmount.add(toAmount);
+                    usdAmount = usdAmount.add(transaction.getUsdAmount());
                     coinIdToUsdAmount.put(coin.getId(), usdAmount);
 
                     break;
@@ -156,12 +154,10 @@ public class Wallet {
 
                 case WITHDRAW: {
                     Coin withdrawCoin = transaction.getFrom();
-                    BigDecimal withdrawAmount = transaction.getFromAmount();
-
                     BigDecimal usdAmount = Optional.ofNullable(coinIdToUsdAmount.get(withdrawCoin.getId()))
                             .orElse(BigDecimal.ZERO);
 
-                    usdAmount = usdAmount.subtract(withdrawAmount);
+                    usdAmount = usdAmount.subtract(transaction.getUsdAmount());
                     coinIdToUsdAmount.put(withdrawCoin.getId(), usdAmount);
                     break;
                 }
