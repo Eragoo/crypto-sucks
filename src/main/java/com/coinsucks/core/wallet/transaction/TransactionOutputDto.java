@@ -17,14 +17,14 @@ import java.util.Optional;
 @AllArgsConstructor
 @Getter
 public class TransactionOutputDto {
-    private Long id;
-    private CoinOutputDto from;
-    private CoinOutputDto to;
-    private BigDecimal fromAmount;
-    private BigDecimal toAmount;
-    private BigDecimal usdAmount;
-    private TransactionType type;
-    private String comment;
+    private final Long id;
+    private final CoinOutputDto from;
+    private final CoinOutputDto to;
+    private final BigDecimal fromAmount;
+    private final BigDecimal toAmount;
+    private final BigDecimal usdAmount;
+    private final TransactionType type;
+    private final String comment;
 
 
     public TransactionOutputDto(Transaction transaction, AuthenticatedUser user) {
@@ -41,5 +41,6 @@ public class TransactionOutputDto {
         this.toAmount = transaction.getToAmount();
         this.comment = transaction.getComment();
         this.type = transaction.getType();
+        this.usdAmount = transaction.getUsdAmount();
     }
 }
