@@ -13,6 +13,7 @@ import lombok.Getter;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -23,7 +24,7 @@ public class WalletResource {
 
     @PostMapping("/{id}/buy")
     public TransactionOutputDto buy(
-            @RequestBody BuyCoinInputDto buyCoinInputDto,
+            @RequestBody @Valid BuyCoinInputDto buyCoinInputDto,
             @AuthenticationPrincipal AuthenticatedUser user,
             @PathVariable Long id
     ) {
@@ -52,13 +53,13 @@ public class WalletResource {
     }
 
     @PostMapping
-    public WalletOutputDto create(@RequestBody WalletInputDto dto, @AuthenticationPrincipal AuthenticatedUser user) {
+    public WalletOutputDto create(@RequestBody @Valid WalletInputDto dto, @AuthenticationPrincipal AuthenticatedUser user) {
         return walletService.create(dto, user);
     }
 
     @PostMapping("/{id}/withdraw")
     public TransactionOutputDto withdraw(
-            @RequestBody WithdrawCoinInputDto coinInputDto,
+            @RequestBody @Valid WithdrawCoinInputDto coinInputDto,
             @AuthenticationPrincipal AuthenticatedUser user,
             @PathVariable Long id
     ) {
@@ -67,7 +68,7 @@ public class WalletResource {
 
     @PostMapping("/{id}/swap")
     public TransactionOutputDto swap(
-            @RequestBody SwapCoinInputDto coinInputDto,
+            @RequestBody @Valid SwapCoinInputDto coinInputDto,
             @AuthenticationPrincipal AuthenticatedUser user,
             @PathVariable Long id
     ) {
