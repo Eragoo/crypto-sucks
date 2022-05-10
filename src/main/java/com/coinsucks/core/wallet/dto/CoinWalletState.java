@@ -5,16 +5,24 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 
 @AllArgsConstructor
 @Getter
 public class CoinWalletState {
     private final Coin coin;
-    private BigDecimal amount;
+    private BigDecimal amount = BigDecimal.ZERO;
 
-    public void addValue(BigDecimal value) {
+    private BigDecimal avgBuyPrice = BigDecimal.ZERO;
+
+    public void addAmount(BigDecimal value, BigDecimal usdPrice) {
+        BigDecimal a = avgBuyPrice.multiply(amount);
+        BigDecimal b = a.add(usdPrice);
+        BigDecimal c = amount.add(value);
+        avgBuyPrice = b.divide(c);
         amount = amount.add(value);
     }
+
     public void subtractValue(BigDecimal value) {
         amount = amount.subtract(value);
     }

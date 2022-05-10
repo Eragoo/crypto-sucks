@@ -16,7 +16,6 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.*;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Getter
@@ -86,12 +85,12 @@ public class Wallet {
         Map<Long, CoinWalletState> coinIdToState = new HashMap<>();
 
         for (Transaction transaction : transactions) {
-
+            BigDecimal usdAmount = transaction.getUsdAmount();
             switch (transaction.getType()) {
                 case BUY: {
                     Coin coin = transaction.getTo();
                     BigDecimal toAmount = transaction.getToAmount();
-                    buy(coinIdToState, coin, toAmount);
+                    buy(coinIdToState, coin, toAmount, usdAmount);
                     break;
                 }
 
@@ -110,7 +109,7 @@ public class Wallet {
 
                     Coin toCoin = transaction.getTo();
                     BigDecimal toAmount = transaction.getToAmount();
-                    buy(coinIdToState, toCoin, toAmount);
+                    buy(coinIdToState, toCoin, toAmount, usdAmount);
                     break;
                 }
             }
@@ -171,20 +170,29 @@ public class Wallet {
     }
 
 
-    private void withdraw(Map<Long, CoinWalletState> coinIdToState, Coin withdrawCoin, BigDecimal withdrawAmount) {
+    private void withdraw(
+            Map<Long, CoinWalletState> coinIdToState,
+            Coin withdrawCoin,
+            BigDecimal withdrawAmount
+    ) {
         //todo add check is enough money
         CoinWalletState stateDto = Optional.ofNullable(coinIdToState.get(withdrawCoin.getId()))
-                .orElse(new CoinWalletState(withdrawCoin, BigDecimal.ZERO));
+                .orElse(new CoinWalletState(withdrawCoin, BigDecimal.ZERO, BigDecimal.ZERO));
 
         stateDto.subtractValue(withdrawAmount);
         coinIdToState.put(withdrawCoin.getId(), stateDto);
     }
 
-    private void buy(Map<Long, CoinWalletState> coinIdToState, Coin coin, BigDecimal toAmount) {
+    private void buy(
+            Map<Long, CoinWalletState> coinIdToState,
+            Coin coin,
+            BigDecimal toAmount,
+            BigDecimal usdAmount
+    ) {
         CoinWalletState stateDto = Optional.ofNullable(coinIdToState.get(coin.getId()))
-                .orElse(new CoinWalletState(coin, BigDecimal.ZERO));
+                .orElse(new CoinWalletState(coin, BigDecimal.ZERO, BigDecimal.ZERO));
 
-        stateDto.addValue(toAmount);
+        stateDto.addAmount(toAmount, usdAmount);
         coinIdToState.put(coin.getId(), stateDto);
     }
 
