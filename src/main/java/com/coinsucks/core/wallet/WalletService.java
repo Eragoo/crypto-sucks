@@ -90,7 +90,7 @@ public class WalletService {
                 .orElseThrow(() -> new NotFoundException("Wallet not found on withdraw operation :("));
 
         return wallet.getCurrentStateSorted()
-                .map(c -> new CoinWalletStateOutputDto(c.getCoin(), c.getAmount(), user))
+                .map(c -> new CoinWalletStateOutputDto(c.getCoin(), c.getAmount(), c.getAvgBuyPrice(), user))
                 .collect(Collectors.toList());
     }
 

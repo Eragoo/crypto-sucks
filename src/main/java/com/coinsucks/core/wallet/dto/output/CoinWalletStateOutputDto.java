@@ -13,8 +13,11 @@ public class CoinWalletStateOutputDto {
     private final CoinOutputDto coin;
     private final BigDecimal amount;
 
-    public CoinWalletStateOutputDto(Coin coin, BigDecimal amount, AuthenticatedUser user) {
+    private final BigDecimal avgBuyPrice;
+
+    public CoinWalletStateOutputDto(Coin coin, BigDecimal amount, BigDecimal avgBuyPrice, AuthenticatedUser user) {
         this.coin = new CoinOutputDto(coin, user);
+        this.avgBuyPrice = avgBuyPrice;
         this.amount = amount;
     }
 }

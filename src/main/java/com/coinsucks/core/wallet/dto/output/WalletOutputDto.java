@@ -22,7 +22,7 @@ public class WalletOutputDto {
         this.currentUsdPrice = wallet.getCurrentPrice();
         this.startUsdPrice = wallet.getStartPrice();
         this.coins = wallet.getCurrentStateSorted()
-                .map(c -> new CoinWalletStateOutputDto(c.getCoin(), c.getAmount(), user))
+                .map(c -> new CoinWalletStateOutputDto(c.getCoin(), c.getAmount(), c.getAvgBuyPrice(), user))
                 .collect(Collectors.toList());
     }
 }

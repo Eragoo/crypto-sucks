@@ -31,7 +31,7 @@ public class CoinOutputDto {
     private final Long totalSupply;
     private final boolean favorite;
 
-    public CoinOutputDto(Coin coin, AuthenticatedUser user) {
+    public  CoinOutputDto(Coin coin, AuthenticatedUser user) {
         this.id = coin.getId();
         this.symbol = coin.getSymbol();
         this.maxSupply = coin.getMaxSupply();
