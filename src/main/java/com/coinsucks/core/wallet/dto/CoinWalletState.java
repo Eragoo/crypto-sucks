@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Optional;
 
 @AllArgsConstructor
@@ -19,7 +20,7 @@ public class CoinWalletState {
         BigDecimal a = avgBuyPrice.multiply(amount);
         BigDecimal b = a.add(usdPrice);
         BigDecimal c = amount.add(value);
-        avgBuyPrice = b.divide(c);
+        avgBuyPrice = b.divide(c, RoundingMode.UP);
         amount = amount.add(value);
     }
 
