@@ -82,4 +82,13 @@ public class WalletResource {
     ) {
         return walletService.state(id, user);
     }
+
+    @PostMapping("{id}/delete-transaction/{transactionId}")
+    public WalletOutputDto deleteTransaction(
+            @AuthenticationPrincipal AuthenticatedUser user,
+            @PathVariable Long id,
+            @PathVariable Long transactionId
+    ) {
+        return walletService.deleteTransaction(id, transactionId, user);
+    }
 }

@@ -31,6 +31,15 @@ public class WalletService {
     private final UserRepository userRepository;
 
     @Transactional
+    public WalletOutputDto deleteTransaction(Long walletId, Long transactionId, AuthenticatedUser user) {
+        transactionRepository.deleteAllById(List.of(transactionId));
+
+        Wallet wallet = walletRepository.findById(walletId)
+                .orElseThrow(() -> new NotFoundException("Wallet not found on buy operation :("));
+        return new WalletOutputDto(wallet, user);
+    }
+
+    @Transactional
     public TransactionOutputDto buy(BuyCoinInputDto buyCoinInputDto, Long walletId, AuthenticatedUser user) {
         Wallet wallet = walletRepository.findById(walletId)
                 .orElseThrow(() -> new NotFoundException("Wallet not found on buy operation :("));
