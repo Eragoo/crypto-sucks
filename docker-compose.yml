@@ -1,21 +1,25 @@
 version: "3.7"
 services:
   app-core:
-    build: .
+    build: ./crypto-sucks
     container_name: coinsucks-app-core
-    restart: always
     ports:
       - 8000:8000
     environment:
       - DB_HOST=db-core
       - DB_PASS=Kj6BtmU4tUHgJHyU
 
+  portal:
+    build: ./coinchecker
+    container_name: coinchecker-portal
+    ports:
+      - 3000:3000
+    environment:
+      - CORE_HOST=app-core
+
   db-core:
     image: postgres:13
     container_name: coinsucks-db-core
-    restart: always
-    volumes:
-      - /Users/yevhenii/Documents/volume/coinsucks-postgres:/backup
     environment:
       - POSTGRES_USER=core
       - POSTGRES_PASSWORD=Kj6BtmU4tUHgJHyU
