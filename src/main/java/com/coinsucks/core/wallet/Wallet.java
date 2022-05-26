@@ -2,6 +2,7 @@ package com.coinsucks.core.wallet;
 
 
 import com.coinsucks.core.coin.Coin;
+import com.coinsucks.core.error.exception.ConflictException;
 import com.coinsucks.core.user.User;
 import com.coinsucks.core.wallet.dto.input.BuyCoinInputDto;
 import com.coinsucks.core.wallet.dto.input.SwapCoinInputDto;
@@ -16,6 +17,8 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Getter
@@ -49,8 +52,21 @@ public class Wallet {
         return transaction;
     }
 
+    private List<Transaction> getSortedByTimeTransactions() {
+        return Optional.ofNullable(transactions)
+                .orElse(new HashSet<>())
+                .stream()
+                .sorted(Comparator.comparing(Transaction::getCreatedAt))
+                .collect(Collectors.toList());
+    }
+
     public Transaction swapCoin(SwapCoinInputDto swapDto, Coin fromCoin, Coin toCoin) {
-        //todo add validation to check is wallet have required coin in needed amount
+        Map<Long, CoinWalletState> currentStateMap = getCurrentStateMap();
+        CoinWalletState swapCoinCurrentState = currentStateMap.get(fromCoin.getId());
+        if (swapCoinCurrentState.getAmount().compareTo(swapDto.getFromAmount()) != 1) {
+            throw new ConflictException("Your balance not enough to swap " + fromCoin.getSymbol() + " coin!");
+        }
+
         Transaction transaction = Transaction.constructSwap(
                 fromCoin,
                 toCoin,
@@ -66,8 +82,11 @@ public class Wallet {
     }
 
     public Transaction withdrawCoin(WithdrawCoinInputDto withdrawDto, Coin coin) {
-
-
+        Map<Long, CoinWalletState> currentStateMap = getCurrentStateMap();
+        CoinWalletState withdrawCoinState = currentStateMap.get(withdrawDto.getCoinId());
+        if (withdrawCoinState.getAmount().compareTo(withdrawDto.getAmount()) != 1) {
+            throw new ConflictException("Your balance not enough to withdraw " + coin.getSymbol() + " coin!");
+        }
 
         Transaction transaction = Transaction.constructWithdraw(
                 coin,
@@ -118,6 +137,10 @@ public class Wallet {
         return coinIdToState.values()
                 .stream()
                 .filter(c -> !c.getAmount().equals(BigDecimal.ZERO));
+    }
+
+    public Map<Long, CoinWalletState> getCurrentStateMap() {
+        return getCurrentState().collect(Collectors.toMap(s -> s.getCoin().getId(), Function.identity()));
     }
 
     public Stream<CoinWalletState> getCurrentStateSorted() {
@@ -175,7 +198,6 @@ public class Wallet {
             Coin withdrawCoin,
             BigDecimal withdrawAmount
     ) {
-        //todo add check is enough money
         CoinWalletState stateDto = Optional.ofNullable(coinIdToState.get(withdrawCoin.getId()))
                 .orElse(new CoinWalletState(withdrawCoin, BigDecimal.ZERO, BigDecimal.ZERO));
 
